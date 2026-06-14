@@ -41,7 +41,10 @@ def clean_username(value):
 
 secret = json.loads(boto3.client("secretsmanager", region_name=REGION).get_secret_value(SecretId=SECRET_ID)["SecretString"])
 username_raw = secret.get("sf_username")
-username = clean_username(username_raw)
+# Force the known clean integration username. Slack/CloudShell has repeatedly
+# polluted pasted email values with mailto markup, so do not trust the secret's
+# username field for this prototype login test.
+username = "aipulse@legendboats.com"
 password = secret.get("sf_password", "")
 security_token = secret.get("sf_security_token", "") or ""
 domain = secret.get("sf_domain", "login") or "login"
